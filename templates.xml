@@ -1,0 +1,46 @@
+<openerp><data >
+    <template id="index">
+    <title>Academy</title >
+        <t t-foreach="teachers" t-as="teacher">
+        <p><t t-esc="teacher.id"/><t t-esc="teacher.name"/></p>
+        </t>
+    </template >
+    <template id="index2">
+        <t t-call= "website.layout" >
+            <t t-set="title">Academy</t>
+            <div class="oe_structure" >
+            <div class= "container" >
+                <t t-foreach="teachers" t-as="teacher" >
+                    <!--<p> <t t-esc= "person.id" /> <t t-esc= "person.name" /></p>-->
+                    <!--<h3><t t-esc= "teacher.name" /></h3>-->
+                    <p><a t-attf-href= "/academy/{{ slug(teacher) }}" >
+                        <t t-esc= "teacher.name" /></a>
+                    </p>
+                </t>
+            </div > </div>
+        </t>
+    </template >
+    <template id="biography" >
+        <t t-call= "website.layout" >
+            <t t-set="title">Academy</t> <div class="oe_structure" />
+            <div class="oe_structure" >
+                <div class= "container" >
+                   <h3><t t-esc= "person.name" /></h3>
+                    <!--<div><t t-esc="person.biography" /></div>-->
+                    <p>Last modified: <i t-field= "person.write_date" /></p>
+                    <div t-field= "person.biography" />
+                </div >
+            </div>
+            <div class="oe_structure" />
+        </t>
+    </template >
+    <template id="product_item_hide_no_price" inherit_id= "website_sale.products_item" >
+        <xpath expr= "//div [hasclass ('product_price' )]/b" position= "attributes" >
+        <attribute name="t-if">product.price &gt; 0</attribute>
+        </xpath >
+    </template >
+    <record id="website_sale.products_categories" model="ir.ui.view">
+    <field name="active" eval="True"/>
+    </record >
+
+</data></openerp >
