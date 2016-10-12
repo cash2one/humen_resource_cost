@@ -2,11 +2,10 @@
 <openerp>
     <data>
         <record model="ir.ui.view" id="humen_cost_form_view">
-            <field name="name">hr_employee.form</field>
-            <field name="model" >hr.employee</field>
+            <field name="name">hr_wages.form</field>
+            <field name="model" >humen_resource_cost.hr_wages</field>
             <field name="arch" type="xml">
-                <!--<form string="hr_cost Form" create="false" edit="true" >-->
-                <form string="hr_cost Form" create="false">
+                <form string="hr_wages Form" create="false">
                     <group>
                         <group>
                                 <field name="name" string = "姓名"/>
@@ -48,8 +47,8 @@
             </field>
         </record>
         <record model="ir.ui.view" id="humen_cost_tree_view">
-            <field name="name">hr_employee.tree</field>
-            <field name="model">hr.employee</field>
+            <field name="name">hr_wages.tree</field>
+            <field name="model">humen_resource_cost.hr_wages</field>
             <field name="arch" type="xml">
                 <tree>
                     <field name="name" string = "姓名"/>
@@ -63,8 +62,8 @@
             </field>
         </record>
         <record model="ir.ui.view" id="humen_cost_search_view">
-            <field name="name">hr_employee.search</field>
-            <field name="model">hr.employee</field>
+            <field name="name">hr_wages.search</field>
+            <field name="model">humen_resource_cost.hr_wages</field>
             <field name="arch" type="xml">
                 <search  string="Search_t">
                     <field name="name" string = "姓名"/>

@@ -4,13 +4,13 @@ from openerp import models,api
 import datetime
 DATE_FORMAT = "%Y-%m"
 
+times=0
+go  =0
 
-class hr_wages(models.Model):
-    _name = 'humen_resource_cost.hr_wages'
+class hr_employee(models.Model):
+    _inherit = 'hr.employee'
 
-    name  = fields.Char(string="姓名")
     monthly_wages = fields.Float(string="月工资")  # 月工资
-    work_email = fields.Char(string="南天邮箱")
 
     project_subsidy = fields.Float(string="项目补贴")  # 项目补贴
     special_benefit = fields.Float(string="特殊补贴")  # 特殊补贴
@@ -60,7 +60,7 @@ class hr_cost(models.Model):
     cost_coefficient = fields.Float(string="费用系数", default=0.5)  # 费用系数
     cost_day = fields.Float(string="费用按照(0.5天计算)",store=True,compute='_get_date_cost')
     cost_month = fields.Float(string="费用按照(月计算)", store=True, compute='_get_date_cost')
-    employee_id = fields.Many2one('humen_resource_cost.hr_wages',ondelete='set null',string="员工")
+    employee_id = fields.Many2one('hr.employee',ondelete='set null',string="员工")
     reimbursement_ids = fields.One2many('humen_resource_cost.reimbursement',"hr_cost_id",ondelete='set null',string="报销表",store =True)
     department_third = fields.Char(string="三级部门")
 
@@ -70,7 +70,10 @@ class hr_cost(models.Model):
     @api.depends('reimbursement_ids')
     def _get_pay_sum(self):
         for record in self:
-            # print "每一条成本表"
+            global times
+            times +=1
+            print times
+            print "每一条成本表"
             if len(record.reimbursement_ids):
             #如果报销表已经关联上
                 for reimbursement_id in record.reimbursement_ids:
@@ -92,7 +95,7 @@ class hr_cost(models.Model):
         #print '这里要实现一个安排动作,每月创建一次下个月的的成本表'
         now = fields.datetime.now()
         print now.day
-        recs = self.env['humen_resource_cost.hr_wages'].search([])
+        recs = self.env['hr.employee'].search([])
         if now.day == 26:
             for rec in recs:
                 id = self.env['humen_resource_cost.hr_cost'].create({'employee_id': rec.id,'monthly_wage_s':rec.monthly_wages,'date':now,"cost_coefficient":rec.cost_coefficient,"department_third":rec.department_third})
@@ -115,7 +118,6 @@ class hr_cost(models.Model):
         for record in self:
             record.cost_month = record.employee_id.sum+record.monthly_wage_s+record.monthly_fee_for_service
             record.cost_day = ((record.cost_month* record.cost_coefficient) / 21.5) * 0.5
-
 
 class reimbursement(models.Model):
     _name = 'humen_resource_cost.reimbursement'
@@ -140,7 +142,7 @@ class reimbursement(models.Model):
     project = fields.Char(string = "项目名称")
     pay = fields.Float(string = "报销金额")
     hr_cost_id = fields.Many2one('humen_resource_cost.hr_cost', ondelete='set null', string="工资单",store =True,compute = "reimbursement_match_hr_cost")
-    employee_id = fields.Many2one('humen_resource_cost.hr_wages',ondelete='set null', string="报销人",store = True, compute = "reimbursement_match_employee")
+    employee_id = fields.Many2one('hr.employee',ondelete='set null', string="报销人",store = True, compute = "reimbursement_match_employee")
 
     test = fields.Char(string="测试字段")
 
@@ -149,7 +151,7 @@ class reimbursement(models.Model):
     @api.multi
     def reimbursement_match_employee(self):
         for rec in self:
-            ress = self.env['humen_resource_cost.hr_wages'].search([("work_email",'=',rec.work_mail)])
+            ress = self.env['hr.employee'].search([("work_email",'=',rec.work_mail)])
             if ress:
                 rec.employee_id = ress.id
                 rec.test = '已关联到人员'
