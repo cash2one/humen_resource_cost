@@ -49,7 +49,7 @@ class hr_wages(models.Model):
     reimbursement_ids =fields.One2many('humen_resource_cost.reimbursement','employee_id',ondelete = 'set null',string="报销表")
     #监听这个字段,如果这个字段又出现了本表的ID,本字段就变化
 
-    test = fields.Char(string="测试字段")
+    #test = fields.Char(string="测试字段")
 
 class hr_cost(models.Model):
     _name ='humen_resource_cost.hr_cost'
@@ -91,13 +91,24 @@ class hr_cost(models.Model):
     def make_cost_list(self):
         #print '这里要实现一个安排动作,每月创建一次下个月的的成本表'
         now = fields.datetime.now()
-        print now.day
+        #print now.day
         recs = self.env['humen_resource_cost.hr_wages'].search([])
-        if now.day == 26:
-            for rec in recs:
-                id = self.env['humen_resource_cost.hr_cost'].create({'employee_id': rec.id,'monthly_wage_s':rec.monthly_wages,'date':now,"cost_coefficient":rec.cost_coefficient,"department_third":rec.department_third})
-                if not id.date:
-                    print "成本表时间创建不成功"
+        for rec in recs:
+            exist = 0
+            strs = self.env['humen_resource_cost.hr_cost'].search([("employee_id", "=", rec.id)])
+            # print '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
+            for str in strs:
+                #print str.date.year,str.date.month
+                st = fields.Date.from_string(str.date)
+                if st.year == now.year and st.month == now.month:
+                    # print st.year,st.month
+                    exist = 1
+                    break
+            if exist==1:
+                continue
+            id = self.env['humen_resource_cost.hr_cost'].create({'employee_id': rec.id,'monthly_wage_s':rec.monthly_wages,'date':now,"cost_coefficient":rec.cost_coefficient,"department_third":rec.department_third})
+            if not id.date:
+                print "成本表时间创建不成功"
 
 
     #总计整个月的实报实销
@@ -113,8 +124,8 @@ class hr_cost(models.Model):
     @api.depends('employee_id.sum','monthly_wage_s','monthly_fee_for_service','cost_coefficient')
     def _get_date_cost(self):
         for record in self:
-            record.cost_month = record.employee_id.sum+record.monthly_wage_s+record.monthly_fee_for_service
-            record.cost_day = ((record.cost_month* record.cost_coefficient) / 21.5) * 0.5
+            record.cost_month = (record.employee_id.sum+record.monthly_wage_s+record.monthly_fee_for_service)* record.cost_coefficient
+            record.cost_day = (record.cost_month/ 21.5) * 0.5
 
 
 class reimbursement(models.Model):
@@ -156,17 +167,6 @@ class reimbursement(models.Model):
             else:
                 rec.test = '未关联到人员'
                 print rec.test
-        # # 报销和人员表关联之后,将报销表与成本表关联
-        # date_reim = fields.Date.from_string(self.date)
-        # # 找出那个人
-        # ress = self.env['humen_resource_cost.hr_cost'].search([("employee_id.id", "=", self.employee_id)])
-        # for res in ress:
-        #     # 找出那个人下
-        #     date_cost = fields.Date.from_string(res.date)
-        #     # 应该只有一个月份符合if条件
-        #     if date_reim.month == date_cost.month:
-        #         # 把成本表的ID存到报销表下,即关联起来
-        #         self.hr_cost_id = res.id
 
     #报销和人员表关联之后,将报销表与成本表关联
     @api.multi
