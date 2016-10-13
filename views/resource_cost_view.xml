@@ -28,7 +28,7 @@
                                 <field name="department_first" string = " 一级部门"/>
                                  <field name="department_second" string = " 二级部门"/>
                                  <field name="department_third" string = " 三级部门"/>
-                                 <field name="sum" string = "test总计"/>
+                                 <!--<field name="sum" string = "test总计"/>-->
                              </group>
                     </group>
                     <field name ='hr_cost_ids' string = "人力资源">
@@ -177,6 +177,8 @@
             <field name="arch" type="xml">
                 <search string="search_s">
                 <group expand="0" string="分组">
+                    <!--<field name ='employee_id' string = "姓名" ></field> -->
+                    <filter string="姓名" name="employee_id" context="{'group_by':'employee_id'}"/>
                         <filter string="月份" name="date" context="{'group_by':'date:month'}"/>
                         <filter string="三级部门" name="department_third" context="{'group_by':'department_third'}"/>
                 </group>
