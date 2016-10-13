@@ -5,7 +5,7 @@
         'description' : """
         """ ,
 # Which modules must be installed for this one to work
-        'depends' : ['website_sale'],
+        'depends' : ['base'],
 # data files which are always installed
         'data': [
                 'ir.model.access.csv',
