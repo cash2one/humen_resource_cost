@@ -6,12 +6,14 @@
         """ ,
 # Which modules must be installed for this one to work
         'depends' : ['base'],
+         'category': 'humenresource cost',
 # data files which are always installed
         'data': [
-                'ir.model.access.csv',
                 'views/resource_cost_view.xml',
                 'views/resource_cost_menu.xml',
                 'views/resource_cost_cron.xml',
+                "security/resource_security.xml",
+                "security/ir.model.access.csv",
                 ],
 # data files which are only installed in "demonstration mode"
         'demo': ['demo.xml',
