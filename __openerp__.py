@@ -11,6 +11,7 @@
                 'ir.model.access.csv',
                 'views/resource_cost_view.xml',
                 'views/resource_cost_menu.xml',
+                'views/resource_cost_cron.xml',
                 ],
 # data files which are only installed in "demonstration mode"
         'demo': ['demo.xml',

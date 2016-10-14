@@ -10,7 +10,7 @@
             <field name="search_view_id" ref="humen_cost_search_view"></field>
            <!-- <field name="view_id" ref="resource_cost_tree_view"/>-->
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Create the first case
+                <p class="oe_view_nocontent_create">创建第一条成本表
                 </p>
             </field>
         </record>
@@ -36,7 +36,7 @@
             <field name="search_view_id" ref="humen_export_search_view"></field>
             <field name="context">{"group_by":"date"}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Create the first case
+                <p class="oe_view_nocontent_create">年度成本表检测数据后自动生成
                 </p>
             </field>
         </record>
@@ -49,7 +49,7 @@
             <!--<field name="view_id" ref="resource_cost_tree_view"/>-->
             <field name="search_view_id" ref="humen_reimbursement_search_view"></field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Create the first case
+                <p class="oe_view_nocontent_create">创建第一条报销表
                 </p>
             </field>
         </record>
