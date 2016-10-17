@@ -28,6 +28,7 @@
                                 <field name="department_first" string = " 一级部门"/>
                                  <field name="department_second" string = " 二级部门"/>
                                  <field name="department_third" string = " 三级部门"/>
+                                 <field name="cost_coefficient" string = "费用系数"/>
                                  <!--<field name="sum" string = "test总计"/>-->
                              </group>
                     </group>
@@ -36,11 +37,11 @@
                             <field name="date" string = "月份"/>
                             <field name="monthly_wage_s" string = "月工资"/>
                             <field name="monthly_fee_for_service" string = "月度实报实销"/>
-                            <field name="cost_coefficient" string = "费用系数"/>
+                            <!--<field name="cost_coefficient" string = "费用系数"/>-->
                             <!--<field name="cost" string = "费用（按照0.5天计算)"/>-->
                             <field name="cost_month" string = "月费用"/>
                             <field name="cost_day" string = "0.5天费用"/>
-                            <field name="employee_id" string = "员工报销明细"/>
+                            <!--<field name="employee_id" string = "员工报销明细"/>-->
                         </tree>
                     </field>
                 </form>
@@ -57,6 +58,7 @@
                     <field name="special_benefit" string = "特殊补贴"/>
                     <field name="other_allowance" string = "其它补贴"/>
                     <field name="three_funds" string = "三项经费"/>
+                    <field name="cost_day" string = "费用（按照0.5天计算)"/>
                     <!--<field name="cost" string = "费用（按照0.5天计算)"/>-->
                 </tree>
             </field>
@@ -77,6 +79,17 @@
                 </search>
             </field>
         </record>
+        <record model="ir.ui.view" id="humen_resource_cost_hr_wages_graph">
+            <field name="name">humen_resource_cost.hr_wages_graph</field>
+            <field name="model">humen_resource_cost.hr_wages</field>
+            <field name="arch" type="xml">
+                <!--<field name="interval">month</field>-->
+                <graph string="hr_cost graph" type="bar" >
+                    <field name="department_second" string = "二级部门" type = "row" />
+                        <field name="cost_day" string = "0.5天费用" operator="+"/>
+                </graph>
+            </field>
+        </record>
         <record model="ir.ui.view" id="humen_reimbursement_form_view">
             <field name="name">reimbursement.form</field>
             <field name="model" >humen_resource_cost.reimbursement</field>
@@ -85,8 +98,8 @@
                 <form string="reimbursement Form" create="false">
                     <group>
                         <group>
-                            <field name ='hr_cost_id' string = "关联工资表" ></field>
-                            <field name ='employee_id' string = "关联人员" ></field>
+                            <!--<field name ='hr_cost_id' string = "关联工资表" ></field>-->
+                            <!--<field name ='employee_id' string = "关联人员" ></field>-->
                             <field name ='name' string = "姓名" ></field>
                             <field name="work_mail" string = "南天邮箱"/>
                             <field name ='department' string = "部门"/>
@@ -123,10 +136,24 @@
                 <search string="search_s">
                 <group expand="0" string="分组">
                         <filter string="月份" name="date" context="{'group_by':'date:month'}"/>
+                    <filter string="费用种类" name="kinds" context="{'group_by':'kinds'}"/>
+                    <filter string="部门" name="department" context="{'group_by':'department'}"/>
+                    <filter string="项目" name="project" context="{'group_by':'project'}"/>
 
                 </group>
                 </search>
 
+            </field>
+        </record>
+        <record model="ir.ui.view" id="humen_resource_cost_reimbursement_graph">
+            <field name="name">humen_resource_cost.reimbursement_graph</field>
+            <field name="model">humen_resource_cost.reimbursement</field>
+            <field name="arch" type="xml">
+                <!--<field name="interval">month</field>-->
+                <graph string="hr_cost graph" type="bar" >
+                    <field name ='department' string = "部门" type = "row"/>
+                    <field name="pay" string = "报销费用" operator="+"/>
+                </graph>
             </field>
         </record>
         <record model="ir.ui.view" id="humen_export_form_view">
@@ -140,15 +167,20 @@
                         <field name ='employee_id' string = "姓名" ></field>
                         <field name ='date' string = "月份"  />
                         <field name="monthly_wage_s" string = "月工资" />
-                        <field name="monthly_fee_for_service" string = "月度实报实销">总计</field>
+                        <field name="monthly_fee_for_service" string = "月度实报实销"></field>
+                        <field name="cost_day" string = "费用（按照0.5天计算)"/>
+                        <field name="cost_month" string = "费用（月计算)"/>
+                        <field name="department_first" string = " 一级部门"/>
+                        <field name="department_second" string = " 二级部门"/>
+                        <field name="department_third" string = " 三级部门"/>
                             <field name ='reimbursement_ids' string = "报销列表">
-                                <tree string="Registered feedback" edit="true">
-                                    <field name ='department' string = "部门"/>
-                                    <field name="date" string = "日期" />
-                                    <field name="kinds" string = "费用种类"></field>
-                                    <field name="project" string = "项目"/>
-                                    <field name="pay" string = "报销费用"/>
-                                </tree>
+                                    <tree string="Registered feedback" edit="true">
+                                        <!--<field name ='department' string = "部门"/>-->
+                                        <field name="date" string = "日期" />
+                                        <field name="kinds" string = "费用种类"></field>
+                                        <field name="project" string = "项目"/>
+                                        <field name="pay" string = "报销费用"/>
+                                    </tree>
                             </field>
                             <field name="test" string = "数据状态"/>
                         </group>
@@ -178,29 +210,26 @@
                 <search string="search_s">
                 <group expand="0" string="分组">
                     <!--<field name ='employee_id' string = "姓名" ></field> -->
-                    <filter string="姓名" name="employee_id" context="{'group_by':'employee_id'}"/>
+                    <!--<filter string="姓名" name="employee_id" context="{'group_by':'employee_id'}"/>-->
                         <filter string="月份" name="date" context="{'group_by':'date:month'}"/>
+                    <filter string="一级部门" name="department_first" context="{'group_by':'department_first'}"/>
+                    <filter string="二级部门" name="department_second" context="{'group_by':'department_second'}"/>
                         <filter string="三级部门" name="department_third" context="{'group_by':'department_third'}"/>
                 </group>
                 </search>
 
             </field>
         </record>
-        <record model="ir.ui.view" id="nantian_erp_hr_employee_graph">
+        <record model="ir.ui.view" id="humen_resource_cost_hr_cost_graph">
             <field name="name">humen_resource_cost.hr_cost_graph</field>
             <field name="model">humen_resource_cost.hr_cost</field>
-            <field name="arch" type="xml">
+                <field name="arch" type="xml">
                 <!--<field name="interval">month</field>-->
-                <graph string="hr_cost graph" type="pie" >
-                    <!--<field name="name" string="姓名"/>-->
-                    <!--<field name="department_id" string="部门"/>-->
-                    <!--<field name="project_id" string="工作组"/>-->
-                    <!--<field name="interval">month</field>-->
-                    <!--<field name="customer_id" string="行业"/>-->
-                    <field name="cost_day" string = "0.5天费用"/>
-
-                </graph>
-            </field>
+                    <graph string="hr_cost graph" type="bar" >
+                        <field name ='date' string = "月份" type = "row" />
+                        <field name="cost_day" string = "0.5天费用" operator="+"/>
+                    </graph>
+                </field>
         </record>
 
     </data>

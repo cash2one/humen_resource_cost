@@ -6,7 +6,7 @@
             <field name="name">人力资源成本</field>
             <field name="res_model">humen_resource_cost.hr_wages</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,graph</field>
             <field name="search_view_id" ref="humen_cost_search_view"></field>
            <!-- <field name="view_id" ref="resource_cost_tree_view"/>-->
             <field name="help" type="html">
@@ -45,7 +45,7 @@
             <field name="name">报销表</field>
             <field name="res_model">humen_resource_cost.reimbursement</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,graph</field>
             <!--<field name="view_id" ref="resource_cost_tree_view"/>-->
             <field name="search_view_id" ref="humen_reimbursement_search_view"></field>
             <field name="help" type="html">
