@@ -6,7 +6,7 @@
         """ ,
 # Which modules must be installed for this one to work
         'depends' : ['base'],
-         'category': 'humenresource cost',
+        'category': 'humenresource cost',
 # data files which are always installed
         'data': [
                 'views/resource_cost_view.xml',

@@ -23,7 +23,7 @@ msgstr ""
 #. module: humen_resource_cost
 #: model:ir.ui.menu,name:humen_resource_cost.resource_cost_menu
 msgid "Cost"
-msgstr "人员成本表"
+msgstr "成本表"
 
 
 #. module: humen_resource_cost
@@ -34,12 +34,12 @@ msgstr "报销表"
 #. module: humen_resource_cost
 #: model:ir.ui.menu,name:humen_resource_cost.all_cost_menu
 msgid "All Cost"
-msgstr "本月成本表"
+msgstr "个人成本表"
 
 #. module: humen_resource_cost
 #: model:ir.ui.menu,name:humen_resource_cost.all_export_menu
 msgid "All Export"
-msgstr "年度成本表"
+msgstr "月度成本表"
 
 #. module: humen_resource_cost
 #: model:ir.ui.menu,name:humen_resource_cost.all_reimburse_menu
