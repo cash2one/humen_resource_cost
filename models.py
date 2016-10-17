@@ -29,9 +29,8 @@ class hr_wages(models.Model):
     department_second = fields.Char(string="二级部门")
     department_third = fields.Char(string="三级部门")
 
-    cost_coefficient = fields.Float(string="费用系数", default=0.5)  # 费用系数
+    cost_coefficient = fields.Float(string="费用系数")  # 费用系数
     sum = fields.Float(string="以上费用总计",store =True, compute='_get_total_cost')
-
 
     @api.depends('project_subsidy', 'special_benefit', 'other_allowance','housing_fund', 'endowment_insurance',\
                  'unemployment_insurance', 'medical_insurance', 'maternity_insurance', 'employment_injury_insurance',\
@@ -43,6 +42,14 @@ class hr_wages(models.Model):
                            + record.medical_insurance + record.maternity_insurance + record.employment_injury_insurance\
                            + record.three_funds + record.department_alaverage_amortization \
                            + record.asset_depreciation_allocation
+
+    # 此条字段是为了便于显示
+    cost_day = fields.Float(string="费用按照(0.5天计算)", store=True, compute='_get_data_cost')
+    @api.depends('hr_cost_ids')
+    def _get_data_cost(self):
+        for x in self:
+            x.cost_day = x.hr_cost_ids[-1].cost_day
+
 
     hr_cost_ids = fields.One2many('humen_resource_cost.hr_cost','employee_id',ondelete = 'set null',string="成本表")
     #cost = fields.Float(string="费用按照(0.5天计算)",related = "hr_cost_ids.cost")#这个cost要显示最后一个即本月的费用,得处理一下
@@ -62,6 +69,9 @@ class hr_cost(models.Model):
     cost_month = fields.Float(string="费用按照(月计算)", store=True, compute='_get_date_cost')
     employee_id = fields.Many2one('humen_resource_cost.hr_wages',ondelete='set null',string="员工")
     reimbursement_ids = fields.One2many('humen_resource_cost.reimbursement',"hr_cost_id",ondelete='set null',string="报销表",store =True)
+
+    department_first = fields.Char(string="一级部门")
+    department_second = fields.Char(string="二级部门")
     department_third = fields.Char(string="三级部门")
 
     test = fields.Char(string="测试字段")
@@ -106,7 +116,8 @@ class hr_cost(models.Model):
                     break
             if exist==1:
                 continue
-            id = self.env['humen_resource_cost.hr_cost'].create({'employee_id': rec.id,'monthly_wage_s':rec.monthly_wages,'date':now,"cost_coefficient":rec.cost_coefficient,"department_third":rec.department_third})
+            id = self.env['humen_resource_cost.hr_cost'].create({'employee_id': rec.id,'monthly_wage_s':rec.monthly_wages,'date':now,"cost_coefficient":rec.cost_coefficient,\
+                                                                "department_first":rec.department_first,"department_second":rec.department_second,"department_third":rec.department_third})
             if not id.date:
                 print "成本表时间创建不成功"
 
