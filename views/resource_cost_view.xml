@@ -193,7 +193,7 @@
             <field name="arch" type="xml">
                 <tree string="hr_cost Tree" >
                     <field name ='employee_id' string = "姓名"></field>
-                    <field name ='date' string = "月份" />
+                    <!--<field name ='date' string = "月份" />-->
                     <field name="monthly_wage_s" string = "月工资" />
                     <field name="monthly_fee_for_service" string = "本月度实报实销"></field>
                     <field name="cost_month" string = "费用（月计算)"/>
