@@ -29,7 +29,7 @@ class hr_wages(models.Model):
     department_second = fields.Char(string="二级部门")
     department_third = fields.Char(string="三级部门")
 
-    cost_coefficient = fields.Float(string="费用系数")  # 费用系数
+    cost_coefficient = fields.Float(string="费用系数",default = 1)  # 费用系数
     sum = fields.Float(string="以上费用总计",store =True, compute='_get_total_cost')
 
     @api.depends('project_subsidy', 'special_benefit', 'other_allowance','housing_fund', 'endowment_insurance',\
@@ -43,18 +43,20 @@ class hr_wages(models.Model):
                            + record.three_funds + record.department_alaverage_amortization \
                            + record.asset_depreciation_allocation
 
-    # 此条字段是为了便于显示
-    cost_day = fields.Float(string="费用按照(0.5天计算)", store=True, compute='_get_data_cost')
-    @api.depends('hr_cost_ids')
-    def _get_data_cost(self):
-        for x in self:
-            x.cost_day = x.hr_cost_ids[-1].cost_day
-
 
     hr_cost_ids = fields.One2many('humen_resource_cost.hr_cost','employee_id',ondelete = 'set null',string="成本表")
     #cost = fields.Float(string="费用按照(0.5天计算)",related = "hr_cost_ids.cost")#这个cost要显示最后一个即本月的费用,得处理一下
     reimbursement_ids =fields.One2many('humen_resource_cost.reimbursement','employee_id',ondelete = 'set null',string="报销表")
     #监听这个字段,如果这个字段又出现了本表的ID,本字段就变化
+
+    # 此条字段是为了便于显示
+    cost_day = fields.Float(string="费用按照(0.5天计算)", store=True, compute='_get_data_cost')
+    @api.depends('hr_cost_ids')
+    def _get_data_cost(self):
+        for x in self:
+            if x.hr_cost_ids:
+                x.cost_day = x.hr_cost_ids[-1].cost_day
+
 
     #test = fields.Char(string="测试字段")
 
@@ -64,7 +66,7 @@ class hr_cost(models.Model):
     date = fields.Date(string="月份")
     monthly_wage_s= fields.Float(string="月工资")  # 月工资
     monthly_fee_for_service = fields.Float(store =True, compute='_get_pay_sum',string="月度实报实销",ondelete='set null')  # 月度实报实销
-    cost_coefficient = fields.Float(string="费用系数", default=0.5)  # 费用系数
+    cost_coefficient = fields.Float(string="费用系数", default=1)  # 费用系数
     cost_day = fields.Float(string="费用按照(0.5天计算)",store=True,compute='_get_date_cost')
     cost_month = fields.Float(string="费用按照(月计算)", store=True, compute='_get_date_cost')
     employee_id = fields.Many2one('humen_resource_cost.hr_wages',ondelete='set null',string="员工")
@@ -99,7 +101,7 @@ class hr_cost(models.Model):
     #这里要实现一个安排动作,每月创建一次下个月的的成本表
     @api.multi
     def make_cost_list(self):
-        #print '这里要实现一个安排动作,每月创建一次下个月的的成本表'
+        #print '这里要实现一个安排动作,每天检测工资表里的日期,如果'
         now = fields.datetime.now()
         #print now.day
         recs = self.env['humen_resource_cost.hr_wages'].search([])
@@ -147,26 +149,16 @@ class reimbursement(models.Model):
     #name = fields.Char(related='hr_cost_id.employee_id', string="报销人")
     department = fields.Char(string = "报销部门")
     date = fields.Date(string = "报销日期")
-    # kinds = fields.Selection([
-    #         (u'手机费', u"手机费"),
-    #         (u'差旅费', u"差旅费"),
-    #         (u'招待费', u"招待费"),
-    #         (u'市内交通费', u"市内交通费"),
-    #         (u'运保费', u"运保费"),
-    #         (u'停车过路费及洗车费', u"停车过路费及洗车费"),
-    #         (u'汽油费', u"汽油费"),
-    #         (u'办公费', u"办公费"),
-    #
-    #     ],string = "费用种类")
     kinds = fields.Char(string = "费用种类")
     project = fields.Char(string = "项目名称")
     pay = fields.Float(string = "报销金额")
     hr_cost_id = fields.Many2one('humen_resource_cost.hr_cost', ondelete='set null', string="工资单",store =True,compute = "reimbursement_match_hr_cost")
     employee_id = fields.Many2one('humen_resource_cost.hr_wages',ondelete='set null', string="报销人",store = True, compute = "reimbursement_match_employee")
 
-    test = fields.Char(string="测试字段")
+    test = fields.Char(string="数据状态")
 
-    #报销表导入就触动函数与人员表关联#ID不能触动
+    #报销表导入就触动函数与人员表关联
+    #ID不能触动
     @api.depends('work_mail')
     @api.multi
     def reimbursement_match_employee(self):
