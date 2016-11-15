@@ -5,16 +5,7 @@ import json
 class Data(http.Controller):
     @http.route('/compute_task_costs/', type='http', auth='public', methods=['POST'])
     def compute_task_cost(self, **post):
-        task_costs = post['task_costs']
-        if task_costs:
-            for ids in range(0,len(task_costs.work_ids)):
-                hr_costs = http.request.env['humen_resource_cost.hr_cost'].search([('employee_id.work_email', '=',task_costs.work_ids[ids].user_email)])
-                work_date = fields.Date.from_string(task_costs.work_ids[ids].date)
-                for hr_cost in hr_costs:
-                    hr_cost_date = fields.Date.from_string(hr_cost.date)
-                    if hr_cost_date.month == work_date.month and hr_cost_date.year == work_date.year:
-                        task_costs.work_ids[ids].cost = (hr_cost.cost_day / 4)*task_costs.work_ids[ids].hours
-            return task_costs
+        pass
 
     @http.route('/count_project_cost/', type='http', auth='public', methods=['POST'])
     def count_project_cost(self, **post):
@@ -39,16 +30,4 @@ class Data(http.Controller):
             return 0
     @http.route('/compute_all_cost/', type='http', auth='public', methods=['POST'])
     def compute_project_cost(self, **post):
-        project_costs = post['all_costs']
-        if project_costs:
-            for project_cost in project_costs:
-                for task_costs in project_cost.tasks:
-                    for ids in range(0, len(task_costs.work_ids)):
-                        hr_costs = http.request.env['humen_resource_cost.hr_cost'].search(
-                            [('employee_id.work_email', '=', task_costs.work_ids[ids].user_email)])
-                        work_date = fields.Date.from_string(task_costs.work_ids[ids].date)
-                        for hr_cost in hr_costs:
-                            hr_cost_date = fields.Date.from_string(hr_cost.date)
-                            if hr_cost_date.month == work_date.month and hr_cost_date.year == work_date.year:
-                                task_costs.work_ids[ids].cost = (hr_cost.cost_day / 4) * task_costs.work_ids[ids].hours
-            return project_costs
+        pass

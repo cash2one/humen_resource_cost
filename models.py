@@ -72,29 +72,31 @@ class hr_wages(models.Model):
 
     #test = fields.Char(string="测试字段")
 
-    @api.multi
-    def send_ip(self):
-        loginurl = 'http://123.56.147.94:8069/web/login?db=nantian'
-        # 设置一个cookie处理器，它负责从服务器下载cookie到本地，并且在发送请求时带上本地的cookie
-        cj = cookielib.LWPCookieJar()
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-        urllib2.install_opener(opener)
-        # 登陆信息
-        loginparams = {'login': 'admin', 'password': 'admin'}
-        # 构造header
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36'
-        }
 
-        # 需要给Post数据编码  urllib.urlencode(loginparams)
-        # 通过urllib2提供的request方法来向指定Url发送我们构造的数据，并完成登录过程
-        req = urllib2.Request(loginurl, urllib.urlencode(loginparams), headers=headers)
-        response = urllib2.urlopen(req)
-        #获得Cookies
-        cookies = response.headers["Set-cookie"]
-        cookie = cookies[cookies.index("session_id="):]
-        session = cookie[:cookie.index(";")]
-        get_url_content('http://123.56.147.94:8069/get_ip/', session)
+    #给123发送公网IP
+    # @api.multi
+    # def send_ip(self):
+    #     loginurl = 'http://123.56.147.94:8069/web/login?db=nantian'
+    #     # 设置一个cookie处理器，它负责从服务器下载cookie到本地，并且在发送请求时带上本地的cookie
+    #     cj = cookielib.LWPCookieJar()
+    #     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+    #     urllib2.install_opener(opener)
+    #     # 登陆信息
+    #     loginparams = {'login': 'admin', 'password': '*****'}
+    #     # 构造header
+    #     headers = {
+    #         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36'
+    #     }
+    #
+    #     # 需要给Post数据编码  urllib.urlencode(loginparams)
+    #     # 通过urllib2提供的request方法来向指定Url发送我们构造的数据，并完成登录过程
+    #     req = urllib2.Request(loginurl, urllib.urlencode(loginparams), headers=headers)
+    #     response = urllib2.urlopen(req)
+    #     #获得Cookies
+    #     cookies = response.headers["Set-cookie"]
+    #     cookie = cookies[cookies.index("session_id="):]
+    #     session = cookie[:cookie.index(";")]
+    #     get_url_content('http://123.56.147.94:8069/get_ip/', session)
 
 class hr_cost(models.Model):
     _name ='humen_resource_cost.hr_cost'
